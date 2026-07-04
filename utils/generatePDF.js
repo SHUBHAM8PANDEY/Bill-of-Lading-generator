@@ -1,29 +1,24 @@
 const PDFDocument = require("pdfkit");
 
-// ----------------------------------------------------------------------
-// This module draws the Bill of Lading / MTD form manually on a SINGLE
-// A4 page using absolute coordinates. Every dynamic text block is drawn
-// with a fixed { width, height, ellipsis:true } box so long user input
-// never pushes PDFKit into auto-creating a second page.
-// ----------------------------------------------------------------------
 
-const PAGE_W = 595.28; // A4 width in points
-const PAGE_H = 841.89; // A4 height in points
+
+const PAGE_W = 595.28; 
+const PAGE_H = 841.89; 
 const MARGIN = 28;
 const CONTENT_W = PAGE_W - MARGIN * 2;
 
 function generateBolPDF(data) {
   const doc = new PDFDocument({
     size: "A4",
-    margin: 0, // we manage all spacing manually
+    margin: 0, 
     autoFirstPage: true,
-    bufferPages: true, // lets us hard-trim to 1 page at the end
+    bufferPages: true, 
   });
 
   const x0 = MARGIN;
   let y = MARGIN;
 
-  // ---- helpers ---------------------------------------------------------
+  
   function rect(x, y, w, h) {
     doc.rect(x, y, w, h).stroke("#000000");
   }
@@ -55,7 +50,7 @@ function generateBolPDF(data) {
     value(val, x, y, w, h, opts);
   }
 
-  // ---- ROW 1: Consigner/Shipper (left, tall) + Title/BL No + Company (right) ----
+  
   const row1H = 160;
   const leftW = CONTENT_W * 0.54;
   const rightW = CONTENT_W - leftW;
@@ -70,7 +65,7 @@ function generateBolPDF(data) {
     row1H
   );
 
-  // Right column split: title box (top) + company info box (bottom)
+ 
   const titleH = 50;
   rect(rightX, y, rightW, titleH);
   doc
@@ -84,7 +79,7 @@ function generateBolPDF(data) {
     .text("OR MULTIMODAL TRANSPORT DOCUMENT", rightX + 8, y + 20, {
       width: rightW - 16,
     });
-  // BL No sub-line
+  
   doc.moveTo(rightX, y + 34).lineTo(rightX + rightW, y + 34).stroke();
   doc.font("Helvetica").fontSize(7).text("BILL OF LADING NO.", rightX + 8, y + 38);
   doc
@@ -96,7 +91,7 @@ function generateBolPDF(data) {
   const companyBoxH = row1H - titleH;
   rect(rightX, companyBoxY, rightW, companyBoxH);
 
-  // little logo circle placeholder
+  
   doc.rect(rightX + 10, companyBoxY + 6, 26, 26).fillAndStroke("#2b2b2b", "#000000");
   doc
     .fillColor("#ffffff")
@@ -141,7 +136,7 @@ function generateBolPDF(data) {
 
   y += row1H;
 
-  // ---- ROW 2: Consignee (left) + boiler-plate terms paragraph (right) ----
+ 
   const row2H = 150;
   boxWithLabel("CONSIGNEE (OR ORDER)", data.consigneeOrder, x0, y, leftW, row2H);
 
@@ -161,7 +156,7 @@ function generateBolPDF(data) {
 
   y += row2H;
 
-  // ---- ROW 3: Notify Address (left) + "For delivery please apply to" (right) ----
+  
   const row3H = 70;
   boxWithLabel("NOTIFY ADDRESS", data.notifyAddress, x0, y, leftW, row3H);
 
@@ -171,7 +166,7 @@ function generateBolPDF(data) {
 
   y += row3H;
 
-  // ---- ROW 4: Place of Acceptance | Port of Loading ----
+
   const row4H = 30;
   const half = CONTENT_W / 2;
   boxWithLabel("PLACE OF ACCEPTANCE", data.placeOfAcceptance, x0, y, half, row4H, {
@@ -188,7 +183,7 @@ function generateBolPDF(data) {
   );
   y += row4H;
 
-  // ---- ROW 5: Port of Discharge | Place of Delivery ----
+  
   const row5H = 30;
   boxWithLabel(
     "PORT OF DISCHARGE",
@@ -210,7 +205,7 @@ function generateBolPDF(data) {
   );
   y += row5H;
 
-  // ---- ROW 6: Vessel & Voyage No. (full width) ----
+  
   const row6H = 25;
   boxWithLabel(
     "VESSEL & VOYAGE NO.",
@@ -223,14 +218,14 @@ function generateBolPDF(data) {
   );
   y += row6H;
 
-  // ---- ROW 7: Goods table header (5 columns) ----
+  
   const headerH = 18;
   const colWidths = [
-    CONTENT_W * 0.16, // container no
-    CONTENT_W * 0.18, // marks and number
-    CONTENT_W * 0.34, // description of goods
-    CONTENT_W * 0.16, // gross weight
-    CONTENT_W * 0.16, // measurement
+    CONTENT_W * 0.16, 
+    CONTENT_W * 0.18, 
+    CONTENT_W * 0.34, 
+    CONTENT_W * 0.16, 
+    CONTENT_W * 0.16, 
   ];
   const headers = [
     "CONTAINER NO.(S).",
@@ -250,7 +245,7 @@ function generateBolPDF(data) {
   });
   y += headerH;
 
-  // ---- ROW 8: Goods data area (single tall box under table header) ----
+ 
   const goodsH = 140;
   cx = x0;
   const goodsValues = [
@@ -277,7 +272,7 @@ function generateBolPDF(data) {
   });
   y += goodsH;
 
-  // ---- ROW 9: "Particulars above furnished by..." centered note ----
+  
   const noteH = 20;
   rect(x0, y, CONTENT_W, noteH);
   doc
@@ -291,7 +286,7 @@ function generateBolPDF(data) {
     );
   y += noteH;
 
-  // ---- ROW 10: Freight Term | Freight Payable At | No. of Original MTDs | Place & Date of Issue ----
+  
   const row10H = 40;
   const fourColW = CONTENT_W / 4;
   const freightLabels = [
@@ -307,7 +302,7 @@ function generateBolPDF(data) {
   });
   y += row10H;
 
-  // ---- ROW 11: Other Particulars (left) + For: as agents for the carrier (right) ----
+  
   const row11H = 70;
   const opW = CONTENT_W * 0.6;
   boxWithLabel(
@@ -338,20 +333,13 @@ function generateBolPDF(data) {
 
   y += row11H;
 
-  // ------------------------------------------------------------------
-  // PAGE 2: "Standard Conditions governing Multimodal Transport
-  // Documents" — printed on its own page, 3-column dense layout,
-  // same visual style as the original printed terms sheet.
-  // ------------------------------------------------------------------
+  
   if (data.termsColumn1 || data.termsColumn2 || data.termsColumn3) {
     doc.addPage({ size: "A4", margin: 0 });
     drawTermsPage(doc, data);
   }
 
-  // Every text block above is drawn inside a fixed-size box with
-  // { height, ellipsis:true }, so PDFKit never auto-adds an unwanted
-  // extra page — the document is always exactly 2 pages (or 1 if no
-  // terms/conditions text is supplied).
+  
   return doc;
 }
 
@@ -375,7 +363,7 @@ function drawTermsPage(doc, data) {
   const bodyTop = margin + 26;
   const bodyH = contentH - 26;
 
-  // 3 fixed columns, one-to-one with the 3 textareas in the form
+  
   const gap = 14;
   const colW = (contentW - gap * 2) / 3;
   const colXs = [margin, margin + colW + gap, margin + (colW + gap) * 2];
@@ -400,7 +388,7 @@ function drawTermsPage(doc, data) {
       });
   });
 
-  // thin column-divider lines for visual authenticity
+  
   doc
     .moveTo(colXs[1] - gap / 2, bodyTop)
     .lineTo(colXs[1] - gap / 2, bodyTop + bodyH)

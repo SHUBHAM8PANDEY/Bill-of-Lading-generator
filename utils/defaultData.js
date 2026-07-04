@@ -1,5 +1,4 @@
-// Default values pre-filled in the form so the on-screen preview and PDF
-// look exactly like the sample Bill of Lading document.
+
 module.exports = {
   blNumber: "",
 
@@ -36,12 +35,7 @@ module.exports = {
 
   forDeliveryApplyTo: "",
 
-  // Full text for PAGE 2 ("Standard Conditions governing Multimodal
-  // Transport Documents"), split into 3 explicit columns so the
-  // on-screen preview AND the PDF both look like the original
-  // 3-column printed terms sheet. Each is editable from the form —
-  // paste your own exact clause wording here if you want an exact
-  // match to your company's printed terms.
+
   termsConditionsTitle:
     "Standard Conditions governing Multimodal Transport Documents (MTD), issued in accordance with Multimodal Transportation of Goods Act, 1993",
 

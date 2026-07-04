@@ -1,69 +1,78 @@
-# Bill of Lading / MTD Generator (EJS + Express + PDFKit)
+Bill of Lading / MTD Generator (EJS + Express + PDFKit)
 
-Yeh project "Committed Cargo Care Limited" jaisa Bill of Lading / Multimodal
-Transport Document (MTD) form banata hai — ek EJS web form jisme fields bharo,
-aur ek click me **A4 size, single-page** PDF download ho jata hai. PDF me kabhi
-bhi extra/2nd page nahi aata, chahe fields me kitna bhi text bhar do (lamba
-text box ke andar hi clip/ellipsis ho jata hai, page overflow nahi hota).
+This project generates a Bill of Lading / Multimodal Transport Document (MTD) similar to the format used by Committed Cargo Care Limited. It provides an EJS-based web form where users can fill in the required details and download a single-page A4 PDF with one click.
 
-## Folder Structure
-```
+The generated PDF always remains exactly one A4 page. Even if users enter long text, the content is clipped or truncated with an ellipsis (...) within the designated field, preventing any overflow onto a second page.
+
+Folder Structure
 bol-app/
-├── server.js              # Express app entry point
+├── server.js              # Express application entry point
 ├── package.json
 ├── routes/
-│   └── bolRoutes.js        # GET / (form) and POST /download-pdf routes
+│   └── bolRoutes.js       # GET / (form) and POST /download-pdf routes
 ├── views/
-│   └── index.ejs           # Form UI (screen par bhi document jaisa dikhta hai)
+│   └── index.ejs          # Form UI (designed to resemble the actual document)
 ├── public/
-│   └── style.css           # Screen preview styling
+│   └── style.css          # Styling for the screen preview
 └── utils/
-    ├── defaultData.js       # Sample/default values (company info etc.)
-    └── generatePDF.js       # PDFKit se exact single-page A4 PDF banata hai
-```
+    ├── defaultData.js     # Default/sample company information
+    └── generatePDF.js     # Generates an exact single-page A4 PDF using PDFKit
+Getting Started
 
-## Kaise Chalayein
+Install the dependencies:
 
-```bash
 npm install
+
+Start the server:
+
 npm start
-```
 
-Fir browser me kholo: **http://localhost:3000**
+Open your browser and visit:
 
-Form bhar ke "Download A4 PDF (Single Page)" button dabao — PDF file
-automatically download ho jayegi.
+http://localhost:3000
 
-## Important: PDF ek page hi kyun rehta hai?
+Fill out the form and click "Download A4 PDF (Single Page)" to automatically download the generated PDF.
 
-Normal HTML-to-PDF tools (jaise Puppeteer/wkhtmltopdf) browser render pe
-depend karte hain, jisse content thoda bhi zyada hone par easily doosra page
-ban jata hai. Isliye yahan **PDFKit** use kiya gaya hai — har box/field ko
-fixed `x, y, width, height` coordinates par khud draw kiya jata hai, aur har
-text field `{ height, ellipsis: true }` option ke sath likha jata hai. Iska
-matlab:
+Why Does the PDF Always Stay on One Page?
 
-- Agar text box se bada hoga, to wo clip/truncate ho jayega (... lag jayega)
-- Kabhi bhi PDFKit automatically naya page add nahi karega
-- Result: hamesha exactly 1 A4 page
+Traditional HTML-to-PDF tools such as Puppeteer or wkhtmltopdf rely on browser rendering, which can easily create additional pages when the content exceeds the available space.
 
-Agar aapko lamba text (jaise poora address ya lambi description) bina
-truncate kiye chahiye, to `utils/generatePDF.js` me us field ka box height
-(`goodsH`, `row2H`, etc.) badha sakte ho — bas dhyan rahe total height A4 ki
-841.89pt se zyada na ho.
+This project uses PDFKit instead. Every field and box is drawn manually using fixed x, y, width, and height coordinates. Text is rendered using the height and ellipsis: true options.
 
-## Customize Company Info
+As a result:
 
-`utils/defaultData.js` me company ka naam, address, GSTIN, registration
-number waghera default set hai (form ke top wale fields se edit bhi kar sakte
-ho, submit karte waqt wahi values PDF me chali jayengi).
+Text that exceeds the available space is automatically clipped or truncated with an ellipsis (...).
+PDFKit never adds an extra page automatically.
+Every generated document is guaranteed to remain a single A4 page.
 
-## Fields Available
+If you need to display longer content (such as full addresses or detailed descriptions) without truncation, you can increase the height of the corresponding field (e.g., goodsH, row2H, etc.) in utils/generatePDF.js. Just ensure that the total layout height does not exceed the A4 page height of 841.89 points.
 
-- Consigner/Shipper, Consignee (or Order), Notify Address
-- Place of Acceptance, Port of Loading, Port of Discharge, Place of Delivery
-- Vessel & Voyage No.
-- Container No.(s), Marks and Number, Description of Goods, Gross Weight, Measurement
-- Freight Term, Freight Payable At, Number of Original MTD(s), Place and Date of Issue
-- Other Particulars, Bill of Lading No.
-- For Delivery of Goods Please Apply To
+Customizing Company Information
+
+Default company information such as the company name, address, GSTIN, registration number, and other details is stored in:
+
+utils/defaultData.js
+
+These values can also be modified directly from the form before generating the PDF. The submitted values will be used in the final PDF.
+
+Available Fields
+Consigner/Shipper
+Consignee (or Order)
+Notify Address
+Place of Acceptance
+Port of Loading
+Port of Discharge
+Place of Delivery
+Vessel & Voyage Number
+Container Number(s)
+Marks and Numbers
+Description of Goods
+Gross Weight
+Measurement
+Freight Term
+Freight Payable At
+Number of Original MTD(s)
+Place and Date of Issue
+Other Particulars
+Bill of Lading Number
+Delivery Instructions ("For Delivery of Goods Please Apply To")
