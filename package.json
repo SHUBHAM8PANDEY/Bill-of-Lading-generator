@@ -1,0 +1,15 @@
+{
+  "name": "bill-of-lading-app",
+  "version": "1.0.0",
+  "description": "Bill of Lading / MTD generator with EJS frontend and PDFKit-based single-page A4 PDF download",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "ejs": "^3.1.10",
+    "pdfkit": "^0.15.0",
+    "body-parser": "^1.20.2"
+  }
+}

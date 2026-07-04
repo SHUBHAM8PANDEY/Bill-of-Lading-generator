@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Bill of Lading Generator</title>
+<link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+<div class="page-wrap">
+  <h1>Bill of Lading / MTD Generator</h1>
+  <p class="sub">Fields bharo, neeche preview dikhega bilkul sample document jaisa. Submit karte hi ek clean single-page A4 PDF download ho jayega.</p>
+
+  <% if (error) { %>
+    <div class="error-banner"><%= error %></div>
+  <% } %>
+
+  <form action="/download-pdf" method="POST" class="bol-form">
+
+    <div class="doc-sheet">
+
+      <!-- ROW 1 -->
+      <div class="row row-1">
+        <div class="box box-consigner">
+          <span class="lbl">CONSIGNER/SHIPPER</span>
+          <textarea name="consignerShipper" rows="6"><%= data.consignerShipper %></textarea>
+        </div>
+        <div class="box-col">
+          <div class="box title-box">
+            <div class="title-main">BILL OF LADING</div>
+            <div class="title-sub">OR MULTIMODAL TRANSPORT DOCUMENT</div>
+            <div class="bl-no-line">
+              <label>BILL OF LADING NO.</label>
+              <input type="text" name="blNumber" value="<%= data.blNumber %>" />
+            </div>
+          </div>
+          <div class="box company-box">
+            <div class="company-logo">C</div>
+            <input class="company-name" type="text" name="companyName" value="<%= data.companyName %>" />
+            <input class="company-line center" type="text" name="companyAddress" value="<%= data.companyAddress %>" />
+            <input class="company-line center" type="text" name="companyGSTIN" value="<%= data.companyGSTIN %>" />
+            <input class="company-line center" type="text" name="companyReg" value="<%= data.companyReg %>" />
+            <input class="company-line center" type="text" name="companyMTO" value="<%= data.companyMTO %>" />
+            <input class="company-line center" type="text" name="companyFMC" value="<%= data.companyFMC %>" />
+            <input class="company-line center" type="text" name="companySCAC" value="<%= data.companySCAC %>" />
+          </div>
+        </div>
+      </div>
+
+      <!-- ROW 2 -->
+      <div class="row row-2">
+        <div class="box box-consignee">
+          <span class="lbl">CONSIGNEE (OR ORDER)</span>
+          <textarea name="consigneeOrder" rows="7"><%= data.consigneeOrder %></textarea>
+        </div>
+        <div class="box terms-box">
+          TAKEN IN CHARGE IN APPARENTLY GOOD CONDITION, HEREIN AT THE PLACE OF RECEIPT, FOR TRANSPORT AND DELIVERY AS MENTIONED ABOVE, UNLESS OTHERWISE STATED. THE MTO, IN ACCORDANCE WITH THE PROVISIONS CONTAINED IN THE MTD, UNDERTAKES TO PERFORM OR TO PROCURE THE PERFORMANCE OF THE MULTIMODAL TRANSPORT FROM THE PLACE AT WHICH THE GOODS ARE TAKEN IN CHARGE, TO THE PLACE DESIGNATED FOR DELIVERY AND ASSUMES THE RESPONSIBILITY FOR SUCH TRANSPORT.
+          ONE OF THE MTD(S) MUST BE SURRENDERED, DULY ENDORSED IN EXCHANGE FOR THE GOODS IN WITNESS WHERE OF THE ORIGINAL MTD ALL THIS TENOR AND DATE HAVE BEEN SIGNED IN THE NUMBER INDICATED BELOW ONE OF WHICH BEING ACCOMPLISHED THE OTHER(S) TO BE VOID.
+        </div>
+      </div>
+
+      <!-- ROW 3 -->
+      <div class="row row-3">
+        <div class="box box-notify">
+          <span class="lbl">NOTIFY ADDRESS</span>
+          <textarea name="notifyAddress" rows="4"><%= data.notifyAddress %></textarea>
+        </div>
+        <div class="box box-apply">
+          <span class="lbl">FOR DELIVERY OF GOODS PLEASE APPLY TO:</span>
+          <textarea name="forDeliveryApplyTo" rows="3"><%= data.forDeliveryApplyTo %></textarea>
+        </div>
+      </div>
+
+      <!-- ROW 4 -->
+      <div class="row row-half">
+        <div class="box half">
+          <span class="lbl">PLACE OF ACCEPTANCE</span>
+          <input type="text" name="placeOfAcceptance" value="<%= data.placeOfAcceptance %>" />
+        </div>
+        <div class="box half">
+          <span class="lbl">PORT OF LOADING</span>
+          <input type="text" name="portOfLoading" value="<%= data.portOfLoading %>" />
+        </div>
+      </div>
+
+      <!-- ROW 5 -->
+      <div class="row row-half">
+        <div class="box half">
+          <span class="lbl">PORT OF DISCHARGE</span>
+          <input type="text" name="portOfDischarge" value="<%= data.portOfDischarge %>" />
+        </div>
+        <div class="box half">
+          <span class="lbl">PLACE OF DELIVERY</span>
+          <input type="text" name="placeOfDelivery" value="<%= data.placeOfDelivery %>" />
+        </div>
+      </div>
+
+      <!-- ROW 6 -->
+      <div class="row">
+        <div class="box full">
+          <span class="lbl">VESSEL &amp; VOYAGE NO.</span>
+          <input type="text" name="vesselVoyageNo" value="<%= data.vesselVoyageNo %>" />
+        </div>
+      </div>
+
+      <!-- ROW 7 & 8: goods table -->
+      <div class="row goods-row">
+        <div class="goods-col">
+          <span class="lbl">CONTAINER NO.(S).</span>
+          <textarea name="containerNos" rows="6"><%= data.containerNos %></textarea>
+        </div>
+        <div class="goods-col">
+          <span class="lbl">MARKS AND NUMBER</span>
+          <textarea name="marksAndNumber" rows="6"><%= data.marksAndNumber %></textarea>
+        </div>
+        <div class="goods-col wide">
+          <span class="lbl">DESCRIPTION OF GOODS</span>
+          <textarea name="descriptionOfGoods" rows="6"><%= data.descriptionOfGoods %></textarea>
+        </div>
+        <div class="goods-col">
+          <span class="lbl">GROSS WEIGHT</span>
+          <textarea name="grossWeight" rows="6"><%= data.grossWeight %></textarea>
+        </div>
+        <div class="goods-col">
+          <span class="lbl">MEASUREMENT</span>
+          <textarea name="measurement" rows="6"><%= data.measurement %></textarea>
+        </div>
+      </div>
+
+      <!-- ROW 9 -->
+      <div class="row">
+        <div class="box full center-text">
+          PARTICULARS ABOVE FURNISHED BY CONSIGNEE/ CONSIGNOR
+        </div>
+      </div>
+
+      <!-- ROW 10 -->
+      <div class="row row-quarter">
+        <div class="box quarter">
+          <span class="lbl">FREIGHT TERM</span>
+          <input type="text" name="freightTerm" value="<%= data.freightTerm %>" />
+        </div>
+        <div class="box quarter">
+          <span class="lbl">FREIGHT PAYABLE AT</span>
+          <input type="text" name="freightPayableAt" value="<%= data.freightPayableAt %>" />
+        </div>
+        <div class="box quarter">
+          <span class="lbl">NUMBER OF ORIGINAL MTD (S)</span>
+          <input type="text" name="numberOfOriginalMTDs" value="<%= data.numberOfOriginalMTDs %>" />
+        </div>
+        <div class="box quarter">
+          <span class="lbl">PLACE AND DATE OF ISSUE:</span>
+          <input type="text" name="placeAndDateOfIssue" value="<%= data.placeAndDateOfIssue %>" />
+        </div>
+      </div>
+
+      <!-- ROW 11 -->
+      <div class="row row-last">
+        <div class="box other-particulars">
+          <span class="lbl">OTHER PARTICULARS (IF ANY)</span>
+          <textarea name="otherParticulars" rows="4"><%= data.otherParticulars %></textarea>
+        </div>
+        <div class="box sign-box">
+          <div class="lbl">FOR: AS AGENTS FOR THE CARRIER</div>
+          <div class="sign-line">Authorised Signatory</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PAGE 2: Standard Conditions (styled like the original 3-column terms sheet) -->
+    <div class="doc-sheet page2-sheet">
+      <div class="page2-title-row">
+        <input type="text" class="page2-title-input" name="termsConditionsTitle" value="<%= data.termsConditionsTitle %>" />
+      </div>
+      <div class="page2-columns">
+        <div class="page2-col">
+          <span class="lbl">COLUMN 1 (clauses ek blank line se alag)</span>
+          <textarea name="termsColumn1Text" rows="24"><%= data.termsColumn1Text %></textarea>
+        </div>
+        <div class="page2-col">
+          <span class="lbl">COLUMN 2</span>
+          <textarea name="termsColumn2Text" rows="24"><%= data.termsColumn2Text %></textarea>
+        </div>
+        <div class="page2-col">
+          <span class="lbl">COLUMN 3</span>
+          <textarea name="termsColumn3Text" rows="24"><%= data.termsColumn3Text %></textarea>
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" class="download-btn">⬇ Download A4 PDF (2 Pages)</button>
+  </form>
+</div>
+
+</body>
+</html>
